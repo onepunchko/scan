@@ -20,7 +20,7 @@ jobs:
     # 安装项目的依赖项（如果有）
     - name: Run script
       run: |
-        apt install masscan
+        sudo apt install masscan
         masscan 149.62.46.0/24 149.62.47.0/24 157.119.100.0/24 157.119.101.0/24 -p0-65535 -oL o.txt --rate 1000000
        
 
