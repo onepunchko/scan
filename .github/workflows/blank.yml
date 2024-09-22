@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  schedule:
+    # 使用cron表达式来设置定时任务，这个例子是在每天的中午12点运行
+    - cron: '10 17 * * *'
+  workflow_dispatch:
+    #手动触发      
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout 仓库代码
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    # 设置 Python 环境
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.8'  # 这里可以指定 Python 版本，比如 3.9
+
+    # 安装项目的依赖项（如果有）
+    - name: Run script
+      run: |
+        apt install masscan
+# 快速寻找反代了 CF 的 IP 及端口，并保存成 .xml 文件
+        masscan 149.62.46.0/24 149.62.47.0/24 157.119.100.0/24 157.119.101.0/24 -p0-65535 -oL o.txt --rate 1000000
+       
+
+    #运行   
+    - name: Commit and push changes
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add -f o.txt
+        if git diff --cached --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m 'Add ce_ip.txt'
+          git push
+        fi
