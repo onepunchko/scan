@@ -16,17 +16,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    # 设置 Python 环境
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.8'  # 这里可以指定 Python 版本，比如 3.9
 
     # 安装项目的依赖项（如果有）
     - name: Run script
       run: |
         apt install masscan
-# 快速寻找反代了 CF 的 IP 及端口，并保存成 .xml 文件
         masscan 149.62.46.0/24 149.62.47.0/24 157.119.100.0/24 157.119.101.0/24 -p0-65535 -oL o.txt --rate 1000000
        
 
